@@ -1,0 +1,98 @@
+<html>
+    <head>
+        <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+        <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+        <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+        <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+        <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+        <style>
+            html, body {
+              width: 100%;
+              height: 100%;
+              margin-top: 10px;
+              margin-bottom: 10px;
+            }
+            #chartdiv {
+                width: 100%;
+                height: 80%;
+            }
+        </style>
+        <script>
+            AmCharts.makeChart("chartdiv", {
+              "type": "serial",
+              "theme": "light",
+              "titles": [{
+                "text": '$title',
+                "size": 15
+              }],
+              "graphs": [{
+                "type": "candlestick",
+                "balloonText": "High: [[high]]\n Open: [[open]]\n Mid: [[mid]]\n Close: [[close]]\nLow: [[low]]",
+                "highField": "high",
+                "openField": "open",
+                "closeField": "close",
+                "valueField": "close",
+                "lowField": "low",
+                "fillColors": "#ffffff",
+                "lineColor": "#e62e00",
+                "lineAlpha": 1,
+                "fillAlphas": 0.9,
+                "columnWidth": 0.4
+              }, {
+                "type": "column",
+                "columnWidth": 0.2,
+                "valueField": "high",
+                "openField": "high",
+                "lineColor": "#e62e00",
+                "lineThickness": 3,
+                "showBalloon": false,
+                "clustered": false
+              }, {
+                "type": "column",
+                "columnWidth": 0.2,
+                "valueField": "low",
+                "openField": "low",
+                "lineColor": "#e62e00",
+                "lineThickness": 3,
+                "showBalloon": false,
+                "clustered": false
+              }, {
+                "type": "column",
+                "columnWidth": 0.4,
+                "valueField": "mid",
+                "openField": "mid",
+                "lineColor": "#e62e00",
+                "lineThickness": 3,
+                "showBalloon": false,
+                "clustered": false
+              }],
+              "chartCursor": {
+                "valueLineEnabled": true,
+                "valueLineBalloonEnabled": true
+              },
+              "categoryField": "exp",
+              "categoryAxis": {
+                "title": "Performance numbers for DG versions (" + ($columns - 1) + " iterations)",
+                "gridPosition": "start",
+                "tickPosition": "start",
+                "tickLength": 10,
+                "axisAlpha": 0.7,
+                "gridAlpha": 0
+              },
+              "valueAxes": [{
+                "position": "left",
+                "title": "Time in MilliSeconds",
+                "axisAlpha": 0,
+              }],
+              "dataProvider":$data,
+              "export": {
+                "enabled": true
+              },
+            });
+        </script>
+    </head>
+    <body>
+        <div id="chartdiv"></div>
+        <div id="chart_description">$info</div>
+    </body>
+</html>

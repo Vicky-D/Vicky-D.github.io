@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Refresh" content="180">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+    <script src="graphAPI.js"></script>
+
+<!--    Amchart supported libraries -->
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<!-- End -->
+
+    <script type="text/javascript">
+
+        function showTime(timeString){
+
+            var element = document.getElementById("currentTimeElement");
+            var dt = new Date();
+            element.innerHTML = (("0"+dt.getDate()).slice(-2)) +"."+ (("0"+(dt.getMonth()+1)).slice(-2)) +"."+ (dt.getFullYear()) +" "+ (("0"+dt.getHours()).slice(-2)) +":"+ (("0"+dt.getMinutes()).slice(-2)) +":"+ (("0"+dt.getSeconds()).slice(-2));
+        };
+
+        function addAllGraphSections(sections){
+            if(sections.length > 0){
+                AmCharts.makeChart( "mainPage", {
+                  "type": "serial",
+                  "dataProvider": sections,
+                  "categoryField": "recordedAT",
+                  "graphs": [ {
+                    "valueField": "volumeChange",
+                    "type": "column",
+                    "fillAlphas": 0.8,
+                    "angle": 30,
+                    "depth3D": 15,
+                    "balloonText": "[[category]]: <b>[[value]]</b>"
+                  } ],
+<!--                  "categoryAxis": {-->
+<!--                    "autoGridCount": false,-->
+<!--                    "gridCount": 0,-->
+<!--                    "gridPosition": "start",-->
+<!--                    "labelRotation": 90-->
+<!--                  }-->
+                });
+            }
+            showTime();
+        };
+
+        function showUnderlyingPrice(price){
+            var element = document.getElementById("underlyingPrice");
+            element.innerHTML = price;
+        };
+
+        $(document).ready(function() {
+            $.ajax({
+                url:"https://optionvolume.herokuapp.com/getOptionsVolumeForChart?date="+new Date(),
+                dataType: 'json', 
+                success: function(data) { 
+                    var underlyingPrice = data['underlyingPrice'];
+                    showUnderlyingPrice(underlyingPrice);
+                    addAllGraphSections(data['data']);
+                },
+                error: function() { 
+                }
+            });  
+        });
+    </script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://kite.zerodha.com/chart/INDICES/NIFTY%20BANK/260105" target="_blank">BankNifty<span/>  <span id = 'underlyingPrice'></span></a>
+    </div>
+    <ul id='menu' class="nav navbar-nav">
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href=""><span id="currentTimeElement"></span></a></li>
+    </ul>
+
+  </div>
+</nav>
+
+<div class="container" id="mainPage" style="overflow-x:auto; height: 500px; margin-top:80px; margin-right:10px; margin-left: 10px; padding: 0px"></div>
+
+<!--<div id="chartdiv" style="width: 640px; height: 400px;"></div>-->
+
+</body>
+
+</html>
